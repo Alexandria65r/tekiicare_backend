@@ -34,7 +34,7 @@ async function UserSignup(app) {
               //authenticate the user
               jwt.sign(
                 { id: user_doc._id, email: user_doc.email },
-                process.env.JWT_SECRET,
+                "tekcareii",
                 (asign_err, token) => {
                   if (asign_err) console.log(asign_err);
                   res.json({ success: true, user_doc, token });
@@ -52,8 +52,9 @@ async function UserSignup(app) {
 async function DecodeToken(app) {
   app.get("/decode-token", (req, res) => {
     //get token
-    const token = req.cookies.tekiicare_auth_token;
-    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+    const token = req.headers.authorization;
+    console.log(req);
+    jwt.verify(token, "tekcareii", (err, decoded) => {
       if (err) return res.json({ error: true, message: "decode error" });
       console.log(decoded);
       User.findById({ _id: decoded.id }, (err, user) => {
@@ -85,7 +86,7 @@ async function UserLogin(app) {
           } else {
             jwt.sign(
               { id: user._id, email: user.email },
-              process.env.JWT_SECRET,
+              "tekcareii",
               (asign_err, token) => {
                 if (asign_err) console.log(asign_err);
                 res.json({ success: true, user, token });

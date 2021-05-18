@@ -6,7 +6,7 @@ const cookieParser = require("cookie-parser");
 const app = express();
 const server = createServer(app);
 const dev = process.env.NODE_ENV !== "production";
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 
 const io = require("socket.io")(server, {
   cors: {
