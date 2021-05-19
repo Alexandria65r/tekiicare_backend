@@ -32,6 +32,7 @@ module.exports = (io) => {
 
     // private call
     socket.on(types.SendVoiceCall, (from) => {
+      console.log(from)
       socket.to(from.user.to).emit(types.RecieveVoiceCall, from);
     });
 
