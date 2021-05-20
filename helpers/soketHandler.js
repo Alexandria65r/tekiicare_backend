@@ -33,13 +33,17 @@ module.exports = (io) => {
     // private call
     socket.on(types.SendVoiceCall, (from) => {
       console.log(from)
-      socket.to(from.user.to).emit(types.RecieveVoiceCall, from);
+      socket.to(from.user.to).emit('answer_call', from);
     });
 
     // Answer private call
     socket.on(types.AnswerCall, (Call) => {
       console.log(Call)
       socket.to(Call.id).emit(types.call_connected, Call.data);
+    });
+
+    socket.on("connect-call", (Call) => {
+      io.emit('call-connected');
     });
 
     //Cancel private call
