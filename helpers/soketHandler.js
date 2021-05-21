@@ -32,23 +32,32 @@ module.exports = (io) => {
 
     // private call
     socket.on(types.call_user, (call) => {
-      console.log(call)
-      socket.to(call.to).emit('incoming_call', call);
+      console.log(call);
+      socket.to(call.to).emit("incoming_call", call);
     });
 
     // Answer private call
     socket.on(types.AnswerCall, (call) => {
-      console.log('===============Call================')
-      console.log(call)
-       socket.to(call.callId).emit("connect-sender");
-       socket.to(call.to).emit('connect-me');
+      console.log("===============Call================");
+      console.log(call);
+      // socket.to(call.callId).emit("connect-sender");
+      // socket.to(call.to).emit('connect-me');
+      socket.to(call.callId).emit("connect-caller", call);
+      
     });
 
-    socket.on("signal_to_reciever", ({to,data}) => {
+    socket.on("connect-me", (call) => {
+      socket.to(call.to).emit("connect-user", call);
+    });
+
+    
+    socket.on("signal_to_reciever", ({ to, data }) => {
+       console.log('signal_to_reciever');
       socket.to(to).emit("reciever_get_signal", data);
     });
 
-    socket.on("signal_to_caller", ({ callId ,data}) => {
+    socket.on("signal_to_caller", ({ callId, data }) => {
+        console.log("signal_to_caller");
       socket.to(callId).emit("caller_get_signal", data);
     });
 
