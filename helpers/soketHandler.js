@@ -31,19 +31,25 @@ module.exports = (io) => {
     });
 
     // private call
-    socket.on(types.SendVoiceCall, (from) => {
-      console.log(from)
-      socket.to(from.user.to).emit('answer_call', from);
+    socket.on(types.call_user, (call) => {
+      console.log(call)
+      socket.to(call.to).emit('incoming_call', call);
     });
 
     // Answer private call
-    socket.on(types.AnswerCall, (Call) => {
-      console.log(Call)
-      socket.to(Call.id).emit(types.call_connected, Call.data);
+    socket.on(types.AnswerCall, (call) => {
+      console.log('===============Call================')
+      console.log(call)
+       socket.to(call.callId).emit("connect-sender");
+       socket.to(call.to).emit('connect-me');
     });
 
-    socket.on("connect-call", (Call) => {
-      io.emit('call-connected');
+    socket.on("signal_to_reciever", ({to,data}) => {
+      socket.to(to).emit("reciever_get_signal", data);
+    });
+
+    socket.on("signal_to_caller", ({ callId ,data}) => {
+      socket.to(callId).emit("caller_get_signal", data);
     });
 
     //Cancel private call

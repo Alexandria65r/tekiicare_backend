@@ -2,7 +2,7 @@ const JoinRoom = "join_room";
 const UserJoinedRoom = "user_joined_room";
 const GetConnectedUsers = "get_connected_users";
 //send call
-const SendVoiceCall = "send_voice_call";
+const call_user = "call_user";
 const SendVideoCall = "send_video_call";
 //recieve call
 const RecieveVoiceCall = "recieve_voice_call";
@@ -17,7 +17,7 @@ module.exports = {
   JoinRoom,
   UserJoinedRoom,
   GetConnectedUsers,
-  SendVoiceCall,
+  call_user,
   SendVideoCall,
   RecieveVoiceCall,
   RecieveVideoCall,
