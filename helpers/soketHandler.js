@@ -50,7 +50,7 @@ module.exports = (io) => {
       socket.to(call.to).emit("connect-user", call);
     });
 
-    
+
     socket.on("signal_to_reciever", ({ to, data }) => {
        console.log('signal_to_reciever');
       socket.to(to).emit("reciever_get_signal", data);
