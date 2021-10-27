@@ -12,20 +12,23 @@ module.exports = (io) => {
 
     //JOIN ROOM
     socket.on(types.JoinRoom, (user) => {
-      console.log("socket.id");
-      console.log(socket.id);
-      console.log(user.id);
+      // console.log("socket.id");
+      // console.log(socket.id);
+      // console.log(user.id);
       socket.join(user.room);
-      console.log("room");
-      console.log(user);
+      // console.log("room");
+      // console.log(user);
+
       users = [user, ...users];
+
 
       io.to(user.room).to(user.id).emit("work-started", true);
 
-      socket.to(user.room).emit(types.UserJoinedRoom);
-      
+      io.to(user.room).emit(types.UserJoinedRoom);
       io.to(user.room).emit(types.GetConnectedUsers, users);
-      console.log(users);
+
+      console.log('users')
+      console.log(users)
 
       socket.on("disconnect", () => {
         broadCastWhenUserDisconnects(socket.id);
