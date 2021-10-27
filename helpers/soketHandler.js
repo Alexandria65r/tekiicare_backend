@@ -20,11 +20,15 @@ module.exports = (io) => {
       console.log(user);
       users = [user, ...users];
 
-      socket.emit(types.UserJoinedRoom, true);
+      io.to(user.room).to(user.id).emit("work-started", true);
+
+      socket.to(user.room).emit(types.UserJoinedRoom);
+      
       io.to(user.room).emit(types.GetConnectedUsers, users);
       console.log(users);
 
       socket.on("disconnect", () => {
+        broadCastWhenUserDisconnects(socket.id);
         removeDisconnectedUser(socket.id);
         console.log(`disconnected user ${socket.id}`);
       });
@@ -41,7 +45,7 @@ module.exports = (io) => {
       socket.to(call.callId).emit("connect-caller", call);
     });
 
-    //once the user accepts the call, 
+    //once the user accepts the call,
     //pass the signal to the caller
     socket.on("signal_to_caller", ({ callId, data }) => {
       socket.to(callId).emit("caller_get_signal", data);
@@ -53,6 +57,13 @@ module.exports = (io) => {
       socket.to(ongoingCall.id).emit(types.CallCanceled);
     });
 
+    // on call ringning
+
+    socket.on("call-ringing", ({ callerId }) => {
+      console.log(`ringing caller id => ${callerId}`);
+      socket.to(callerId).emit("call_is_ringing", true);
+    });
+
     function removeDisconnectedUser(id) {
       const usersCopy = [...users];
       const disconnected_user = users.find((u) => u.id === id);
@@ -61,6 +72,11 @@ module.exports = (io) => {
       //users = usersCopy;
       //send the remaining users list
       io.to(disconnected_user.room).emit(types.GetConnectedUsers, users);
+    }
+
+    function broadCastWhenUserDisconnects(id) {
+      const disconnected_user = users.find((u) => u.id === id);
+      io.to(disconnected_user.room).emit("user_disconnected", id);
     }
   });
 };

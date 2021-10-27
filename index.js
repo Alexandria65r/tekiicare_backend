@@ -6,7 +6,7 @@ const cookieParser = require("cookie-parser");
 const app = express();
 const server = createServer(app);
 const dev = process.env.NODE_ENV !== "production";
-const PORT = process.env.PORT || 5000;
+const PORT = dev ? 5505 : process.env.PORT;
 
 const io = require("socket.io")(server, {
   cors: {
@@ -19,14 +19,21 @@ const io = require("socket.io")(server, {
 const socketHandler = require("./helpers/soketHandler");
 const routesHandler = require("./helpers/routesHandler");
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "*",
+    credentials: true,
+    methods: ["GET", "POST", "PUT"],
+  })
+);
+
 app.use(cookieParser());
 app.use(express.json());
 
 routesHandler(app);
 
 app.get("/", (req, res) => {
-  res.send('Server is running...🍕')
+  res.send("Server is running...🍕");
 });
 
 //call the socketHandler
