@@ -40,18 +40,18 @@ module.exports = (io) => {
     // private call
     socket.on(types.call_user, (call) => {
       console.log(call);
-      socket.to(call.to).emit("incoming_call", call);
+      io.to(call.to).emit("incoming_call", call);
     });
 
     // Answer private call
     socket.on(types.AnswerCall, (call) => {
-      socket.to(call.callId).emit("connect-caller", call);
+      io.to(call.callId).emit("connect-caller", call);
     });
 
     //once the user accepts the call,
     //pass the signal to the caller
     socket.on("signal_to_caller", ({ callId, data }) => {
-      socket.to(callId).emit("caller_get_signal", data);
+      io.to(callId).emit("caller_get_signal", data);
     });
 
     //Cancel private call
